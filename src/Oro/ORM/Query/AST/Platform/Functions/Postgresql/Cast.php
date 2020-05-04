@@ -28,15 +28,18 @@ class Cast extends PlatformFunctionNode
             return $timestampFunction->getSql($sqlWalker);
         }
 
-        if ($type === 'json' && !$sqlWalker->getConnection()->getDatabasePlatform()->hasNativeJsonType()) {
-            $type = 'text';
+        if ($type === 'json') {
+            $databasePlatform = $sqlWalker->getConnection()->getDatabasePlatform();
+            if (!method_exists($databasePlatform, 'hasNativeJsonType') || !$databasePlatform->hasNativeJsonType()) {
+                $type = 'text';
+            }
         }
 
         if ($type === 'bool') {
             $type = 'boolean';
         }
 
-        /**
+        /*
          * The notations varchar(n) and char(n) are aliases for character varying(n) and character(n), respectively.
          * character without length specifier is equivalent to character(1). If character varying is used
          * without length specifier, the type accepts strings of any size. The latter is a PostgreSQL extension.

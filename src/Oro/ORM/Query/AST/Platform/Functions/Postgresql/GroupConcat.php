@@ -3,8 +3,8 @@
 namespace Oro\ORM\Query\AST\Platform\Functions\Postgresql;
 
 use Doctrine\ORM\Query\AST\Node;
-use Oro\ORM\Query\AST\Functions\String\GroupConcat as Base;
 use Doctrine\ORM\Query\SqlWalker;
+use Oro\ORM\Query\AST\Functions\String\GroupConcat as Base;
 use Oro\ORM\Query\AST\Platform\Functions\PlatformFunctionNode;
 
 class GroupConcat extends PlatformFunctionNode
@@ -21,7 +21,7 @@ class GroupConcat extends PlatformFunctionNode
         /** @var Node[] $pathExpressions */
         $pathExpressions = $this->parameters[Base::PARAMETER_KEY];
         foreach ($pathExpressions as $pathExp) {
-            $fields[] = $pathExp->dispatch($sqlWalker);
+            $fields[] = $pathExp instanceof Node ? $pathExp->dispatch($sqlWalker) : $pathExp;
         }
 
         if (count($fields) === 1) {
